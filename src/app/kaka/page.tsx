@@ -1,11 +1,11 @@
-import CSuspense from "@/app/utils/CSuspense";
-import Keke from "./components/keke";
+import Lalala from './components/lala';
+import CSuspense from '../utils/CSuspense';
 
 export default function Kaka() {
   return (
     <div>
       <CSuspense fallback={<p>Loading...</p>}>
-        <Keke />
+        <Lalala />
       </CSuspense>
     </div>
   );

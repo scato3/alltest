@@ -11,14 +11,14 @@ const fetchData = () =>
       console.log("Data fetched!");
       isResolved = true;
       resolve();
-    }, 2000); // 2초 후 완료
+    }, 2000);
   });
 
 const resource = {
   read: () => {
     if (!isResolved) {
       console.log("Data not ready yet. Throwing Promise...");
-      throw fetchData(); // 데이터를 가져오는 Promise를 던짐
+      throw fetchData();
     }
     console.log("Data ready, rendering component.");
   },

@@ -1,16 +1,19 @@
 import { useRef } from 'react';
 
-export default function useCustomMemo<T>(factory: () => T, deps: unknown[]): T {
-  const cacheRef = useRef<{ value: T; deps: unknown[] } | null>(null);
+export default function useCustomCallback<T extends (...args: any[]) => any>(
+  callback: T,
+  deps: unknown[],
+): T {
+  const cacheRef = useRef<{ callback: T; deps: unknown[] } | null>(null);
 
   if (!cacheRef.current || !areDepsEqual(cacheRef.current.deps, deps)) {
     cacheRef.current = {
-      value: factory(),
+      callback,
       deps,
     };
   }
 
-  return cacheRef.current.value;
+  return cacheRef.current.callback;
 }
 
 function areDepsEqual(oldDeps: unknown[], newDeps: unknown[]): boolean {
