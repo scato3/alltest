@@ -7,6 +7,7 @@ export default function Test2() {
   const router = useRouter();
 
   const isServerSide = typeof window === 'undefined';
+  console.log(isServerSide);
   const randomValue = Math.random();
   console.log('Test2', isServerSide, randomValue);
 

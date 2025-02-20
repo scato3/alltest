@@ -1,10 +1,10 @@
-import { useRef } from 'react';
+import useCustomRef from './CRef';
 
 export default function useCustomCallback<T extends (...args: any[]) => any>(
   callback: T,
   deps: unknown[],
 ): T {
-  const cacheRef = useRef<{ callback: T; deps: unknown[] } | null>(null);
+  const cacheRef = useCustomRef<{ callback: T; deps: unknown[] } | null>(null);
 
   if (!cacheRef.current || !areDepsEqual(cacheRef.current.deps, deps)) {
     cacheRef.current = {

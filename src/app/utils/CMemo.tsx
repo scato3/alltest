@@ -1,7 +1,7 @@
-import { useRef } from 'react';
+import useCustomRef from './CRef';
 
 export default function useCustomMemo<T>(factory: () => T, deps: unknown[]): T {
-  const cacheRef = useRef<{ value: T; deps: unknown[] } | null>(null);
+  const cacheRef = useCustomRef<{ value: T; deps: unknown[] } | null>(null);
 
   if (!cacheRef.current || !areDepsEqual(cacheRef.current.deps, deps)) {
     cacheRef.current = {
