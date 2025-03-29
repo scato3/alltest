@@ -1,6 +1,6 @@
 'use client';
 
-import { useTest } from "../api/test";
+import { useTest } from '../api/test';
 
 export default function TestPage() {
   const { data, isLoading, error } = useTest();
@@ -11,9 +11,7 @@ export default function TestPage() {
   return (
     <div>
       <h1>Test Page</h1>
-      <div>
-        {JSON.stringify(data)}
-      </div>
+      <div>{JSON.stringify(data)}</div>
     </div>
   );
 }

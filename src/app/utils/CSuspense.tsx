@@ -1,32 +1,91 @@
-"use client";
+'use client';
 
-import React, { useRef } from "react";
+import { Component, ReactNode } from 'react';
 
-type CSuspenseProps = {
-  fallback: React.ReactNode;
-  children: React.ReactNode;
-};
-
-function isPromise(value: any): value is Promise<any> {
-  return !!value && typeof value.then === "function";
+interface SuspenseProps {
+  fallback: ReactNode;
+  children: ReactNode;
 }
 
-const CSuspense: React.FC<CSuspenseProps> = ({ fallback, children }) => {
-  const promiseRef = useRef<Promise<any> | null>(null);
+interface SuspenseState {
+  pending: boolean;
+  error?: any;
+}
 
-  try {
-    // children에서 Promise를 던지는 경우 감지
-    if (promiseRef.current) {
-      throw promiseRef.current;
-    }
-    return <>{children}</>;
-  } catch (error) {
-    if (isPromise(error)) {
-      promiseRef.current = error;
-      return <>{fallback}</>;
-    }
-    throw error; // 예상치 못한 에러는 다시 던짐
-  }
+export const createResource = (promise: Promise<any>) => {
+  let status = 'pending';
+  let result: any;
+
+  const suspender = promise.then(
+    (response) => {
+      status = 'success';
+      result = response;
+    },
+    (error) => {
+      status = 'error';
+      result = error;
+    },
+  );
+
+  return {
+    read() {
+      switch (status) {
+        case 'pending':
+          throw { suspender, status };
+        case 'error':
+          throw result;
+        default:
+          return result;
+      }
+    },
+  };
 };
+
+class CSuspense extends Component<SuspenseProps, SuspenseState> {
+  private mounted = false;
+  state: SuspenseState = {
+    pending: false,
+  };
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
+  componentDidCatch(thrownValue: any) {
+    if (!this.mounted) return;
+
+    // suspender와 status를 포함한 객체가 throw되었는지 확인
+    if (thrownValue?.suspender && thrownValue?.status === 'pending') {
+      this.setState({ pending: true });
+
+      thrownValue.suspender.then(
+        () => {
+          if (this.mounted) {
+            this.setState({ pending: false });
+          }
+        },
+        (error: Error) => {
+          if (this.mounted) {
+            this.setState({ error, pending: false });
+          }
+        },
+      );
+    } else {
+      throw thrownValue;
+    }
+  }
+
+  render() {
+    if (this.state.error) {
+      throw this.state.error;
+    }
+
+    return this.state.pending ? this.props.fallback : this.props.children;
+  }
+}
 
 export default CSuspense;
