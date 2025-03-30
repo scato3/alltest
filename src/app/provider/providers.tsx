@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import QueryProvider from "./query-provider";
-import { PortalProvider } from "./globalportal-provider";
+import QueryProvider from './query-provider';
+import { ModalProvider } from './modal-provider';
 
 interface ProvidersProps {
   children: JSX.Element;
@@ -9,8 +9,8 @@ interface ProvidersProps {
 
 export default function Providers({ children }: ProvidersProps) {
   return (
-    <PortalProvider>
+    <ModalProvider>
       <QueryProvider>{children}</QueryProvider>
-    </PortalProvider>
+    </ModalProvider>
   );
 }
