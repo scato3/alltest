@@ -3,27 +3,33 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, { useState } from 'react';
+import { ErrorHandler } from '@/utils/errorHandler';
 
 type Props = {
-  children: React.ReactNode;
+  children: JSX.Element;
 };
 
 export default function QueryProvider({ children }: Props) {
-  const [client] = useState(
-    new QueryClient({
+  const errorHandler = ErrorHandler();
+
+  const [client] = useState(() => {
+    const client = new QueryClient({
       defaultOptions: {
         queries: {
-          refetchOnWindowFocus: false, // 탭 전환 시 재요청 비활성화
-          refetchOnReconnect: false, // 인터넷 연결 시 재요청 비활성화
-          refetchOnMount: false, // 컴포넌트가 마운트될 때 재요청 비활성화
-          retry: false, // 실패 시 재시도 비활성화
+          refetchOnWindowFocus: false,
+          refetchOnReconnect: false,
+          refetchOnMount: false,
+          retry: false,
         },
         mutations: {
-          throwOnError: true,
+          retry: false,
+          onError: errorHandler,
         },
       },
-    }),
-  );
+    });
+
+    return client;
+  });
 
   return (
     <QueryClientProvider client={client}>

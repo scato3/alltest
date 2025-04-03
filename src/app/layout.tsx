@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
-import QueryProvider from './provider/query-provider';
-import { ModalProvider } from './provider/modal-provider';
-import { ErrorBoundary } from './provider/error-boundary';
+import Providers from './provider/providers';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -11,16 +9,12 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: JSX.Element;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="en">
       <body>
-        <ModalProvider>
-          <ErrorBoundary>
-            <QueryProvider>{children}</QueryProvider>
-          </ErrorBoundary>
-        </ModalProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
