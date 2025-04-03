@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import QueryProvider from './provider/query-provider';
+import { ModalProvider } from './provider/modal-provider';
+import { ErrorBoundary } from './provider/error-boundary';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -14,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <QueryProvider>
-          <div>{children}</div>
-        </QueryProvider>
+        <ModalProvider>
+          <ErrorBoundary>
+            <QueryProvider>{children}</QueryProvider>
+          </ErrorBoundary>
+        </ModalProvider>
       </body>
     </html>
   );
