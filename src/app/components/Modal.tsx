@@ -29,6 +29,7 @@ export default function Modal({ children, onClose }: ModalProps) {
           maxWidth: '70vw',
           maxHeight: '70vh',
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>

@@ -1,5 +1,5 @@
 import { getCookie } from 'cookies-next';
-import Api from 'hs-fetch';
+import Api from 'hsc-fetch';
 
 const api = new Api({
   baseUrl: 'https://jsonplaceholder.typicode.com',

@@ -2,6 +2,7 @@
 
 import QueryProvider from './query-provider';
 import { ModalProvider } from './modal-provider';
+import { OverlayProvider } from 'overlay-kit';
 
 interface ProvidersProps {
   children: JSX.Element;
@@ -9,8 +10,10 @@ interface ProvidersProps {
 
 export default function Providers({ children }: ProvidersProps) {
   return (
-    <ModalProvider>
-      <QueryProvider>{children}</QueryProvider>
-    </ModalProvider>
+    <OverlayProvider>
+      <ModalProvider>
+        <QueryProvider>{children}</QueryProvider>
+      </ModalProvider>
+    </OverlayProvider>
   );
 }
