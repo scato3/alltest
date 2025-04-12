@@ -59,7 +59,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
     [],
   );
 
-  const hideModal = useCallback(() => {
+  const hideModal = useCallback(() => { 
     setModal(null);
   }, []);
 
