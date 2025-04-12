@@ -1,0 +1,22 @@
+@use 'sass:map';
+
+$colors: (
+  primary: #0062df,
+  selected: #f4f5f7,
+  border: #d6d8db,
+  text: (
+    primary: #1a2434,
+    secondary: #565d6a,
+    placeholder: #bec1c6,
+  ),
+  up: #c84a31,
+  down: #1261c4,
+  disabled: #bec1c6,
+);
+
+@function color($key, $subkey: null) {
+  @if $subkey {
+    @return map.get(map.get($colors, $key), $subkey);
+  }
+  @return map.get($colors, $key);
+}

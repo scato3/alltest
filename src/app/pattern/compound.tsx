@@ -1,18 +1,28 @@
-import { createContext, ReactNode, useState, useContext } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 
-interface SelectContextType {
+type SelectContextType = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  selectedValue: string | null;
-  setSelectedValue: (value: string | null) => void;
-}
+  selectedValue: string;
+  setSelectedValue: (selectedValue: string) => void;
+};
 
 const SelectContext = createContext<SelectContextType | null>(null);
+
+const useSelectContext = () => {
+  const context = useContext(SelectContext);
+  if (!context) {
+    throw new Error(
+      'Select 컴포넌트는 Select.Root 내부에서만 사용할 수 있습니다',
+    );
+  }
+  return context;
+};
 
 export const Select = {
   Root: ({ children }: { children: ReactNode }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedValue, setSelectedValue] = useState<string | null>(null);
+    const [selectedValue, setSelectedValue] = useState('');
 
     return (
       <SelectContext.Provider
@@ -23,14 +33,8 @@ export const Select = {
     );
   },
 
-  Trigger: ({ placeholder = '선택하세요' }: { placeholder?: string }) => {
-    const context = useContext(SelectContext);
-
-    if (!context) {
-      throw new Error('Trigger must be used within a Select.Root');
-    }
-
-    const { isOpen, setIsOpen, selectedValue } = context;
+  Trigger: ({ placeholder = '선택해주세요' }: { placeholder?: string }) => {
+    const { isOpen, setIsOpen, selectedValue } = useSelectContext();
 
     return (
       <button onClick={() => setIsOpen(!isOpen)}>
@@ -40,11 +44,7 @@ export const Select = {
   },
 
   List: ({ children }: { children: ReactNode }) => {
-    const context = useContext(SelectContext);
-
-    if (!context) throw new Error('에러');
-
-    const { isOpen } = context;
+    const { isOpen } = useSelectContext();
 
     if (!isOpen) return null;
 
@@ -52,20 +52,13 @@ export const Select = {
   },
 
   Option: ({ value, children }: { value: string; children: ReactNode }) => {
-    const context = useContext(SelectContext);
-    if (!context) throw new Error('에러');
+    const { setSelectedValue, setIsOpen } = useSelectContext();
 
-    const { setSelectedValue, setIsOpen } = context;
+    const handleClick = () => {
+      setSelectedValue(value);
+      setIsOpen(false);
+    };
 
-    return (
-      <div
-        onClick={() => {
-          setSelectedValue(value);
-          setIsOpen(false);
-        }}
-      >
-        {children}
-      </div>
-    );
+    return <button onClick={handleClick}>{children}</button>;
   },
 };
